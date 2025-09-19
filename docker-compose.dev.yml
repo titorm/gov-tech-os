@@ -3,35 +3,35 @@ version: '3.8'
 services:
   postgres:
     image: postgres:15-alpine
-    container_name: turborepo-template-postgres-dev
+    container_name: gov-tech-postgres-dev
     environment:
-      POSTGRES_DB: turborepo-template
+      POSTGRES_DB: gov-tech
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - postgres_dev_data:/var/lib/postgresql/data
     networks:
       - dev-network
-    
+
   mongodb:
     image: mongo:7-alpine
-    container_name: turborepo-template-mongo-dev
+    container_name: gov-tech-mongo-dev
     environment:
-      MONGO_INITDB_DATABASE: turborepo-template-logs
+      MONGO_INITDB_DATABASE: gov-tech-logs
     ports:
-      - "27017:27017"
+      - '27017:27017'
     volumes:
       - mongodb_dev_data:/data/db
     networks:
       - dev-network
-    
+
   redis:
     image: redis:7-alpine
-    container_name: turborepo-template-redis-dev
+    container_name: gov-tech-redis-dev
     ports:
-      - "6379:6379"
+      - '6379:6379'
     volumes:
       - redis_dev_data:/data
     networks:
@@ -40,9 +40,9 @@ services:
   # Database management tools
   adminer:
     image: adminer:4.8.1
-    container_name: turborepo-template-adminer
+    container_name: gov-tech-adminer
     ports:
-      - "8080:8080"
+      - '8080:8080'
     depends_on:
       - postgres
     networks:
@@ -50,12 +50,12 @@ services:
 
   mongo-express:
     image: mongo-express:1.0.0
-    container_name: turborepo-template-mongo-express
+    container_name: gov-tech-mongo-express
     environment:
-      ME_CONFIG_MONGODB_URL: mongodb://mongodb:27017/turborepo-template-logs
+      ME_CONFIG_MONGODB_URL: mongodb://mongodb:27017/gov-tech-logs
       ME_CONFIG_BASICAUTH: false
     ports:
-      - "8081:8081"
+      - '8081:8081'
     depends_on:
       - mongodb
     networks:

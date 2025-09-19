@@ -1,6 +1,8 @@
 packages:
   - 'apps/*'
+  - 'apps/**'
   - 'packages/*'
+  - 'packages/**'
   - 'tools/*'
 
 # Exclude test directories

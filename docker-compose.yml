@@ -5,15 +5,15 @@ services:
     build:
       context: .
       dockerfile: apps/api/Dockerfile
-    container_name: turborepo-template-api
+    container_name: gov-tech-api
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=postgresql://postgres:password@postgres:5432/turborepo-template
-      - MONGODB_URI=mongodb://mongodb:27017/turborepo-template-logs
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/gov-tech
+      - MONGODB_URI=mongodb://mongodb:27017/gov-tech-logs
       - REDIS_URL=redis://redis:6379
       - JWT_SECRET=${JWT_SECRET}
     ports:
-      - "3001:3001"
+      - '3001:3001'
     depends_on:
       - postgres
       - mongodb
