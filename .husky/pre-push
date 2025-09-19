@@ -1,10 +1,15 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 echo "🚀 Running pre-push checks..."
 
 # Determine changed files in the push and exclude any in dist/.dist so we don't validate build artifacts.
-changed_files=$(git diff --name-only origin/main...HEAD)
+# Use origin/main...HEAD when available; otherwise fall back to recent commit range to avoid 'unknown revision' errors.
+if git rev-parse --verify origin/main >/dev/null 2>&1; then
+	changed_files=$(git diff --name-only origin/main...HEAD) || changed_files=""
+elif git rev-parse --verify HEAD~1 >/dev/null 2>&1; then
+	changed_files=$(git diff --name-only HEAD~1..HEAD) || changed_files=""
+else
+	# As a last resort, list files changed in HEAD
+	changed_files=$(git diff-tree --no-commit-id --name-only -r HEAD) || changed_files=""
+fi
 dist_files=$(printf "%s" "$changed_files" | awk '/(^|\/)(\.dist|dist)(\/|$)|\.dist$/')
 if [ -n "$dist_files" ]; then
 	echo "Found dist/.dist files in the change set — skipping linting for those paths:"
