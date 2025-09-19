@@ -3,8 +3,30 @@
 
 echo "🚀 Running pre-push checks..."
 
-# Run tests
+# Determine changed files in the push and exclude any in dist/.dist so we don't validate build artifacts.
+changed_files=$(git diff --name-only origin/main...HEAD)
+dist_files=$(printf "%s" "$changed_files" | awk '/(^|\/)(\.dist|dist)(\/|$)|\.dist$/')
+if [ -n "$dist_files" ]; then
+	echo "Found dist/.dist files in the change set — skipping linting for those paths:"
+	printf "%s\n" "$dist_files"
+	# Temporarily unstage dist files from index for linting purposes
+	printf "%s\n" "$dist_files" | xargs -I{} git restore --staged -- {} || true
+	echo "Running lint-staged on remaining staged files..."
+	pnpm lint-staged || { echo "lint-staged failed"; # re-stage before exit
+		printf "%s\n" "$dist_files" | xargs -I{} git add -- {}; exit 1; }
+	# Re-stage previously unstaged dist files
+	printf "%s\n" "$dist_files" | xargs -I{} git add -- {}
+else
+	echo "Running lint-staged..."
+	pnpm lint-staged || { echo "lint-staged failed"; exit 1; }
+fi
+
+echo "🔧 Running type checks for active packages (ui and types)..."
+# Run package-level type-checks by executing pnpm in the package directories to avoid turbo across the whole repo
+(cd packages/ui && pnpm run type-check) || { echo "Type-check failed in @repo/ui. Fix TypeScript errors."; exit 1; }
+(cd packages/types && pnpm run type-check) || { echo "Type-check failed in @repo/types. Fix TypeScript errors."; exit 1; }
+
 echo "🧪 Running tests..."
-pnpm test
+pnpm test || { echo "Tests failed"; exit 1; }
 
 echo "✅ Pre-push checks completed!"
