@@ -1,64 +1,7 @@
 {
-  "typescript.preferences.includePackageJsonAutoImports": "on",
-  "typescript.suggest.autoImports": true,
-  "typescript.updateImportsOnFileMove.enabled": "always",
-  "editor.formatOnSave": true,
-  "editor.formatOnPaste": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "always",
-    "source.organizeImports": "always"
-  },
-  "editor.rulers": [
-    80,
-    120
-  ],
-  "editor.wordWrap": "wordWrapColumn",
-  "editor.wordWrapColumn": 80,
-  "editor.tabSize": 2,
-  "editor.insertSpaces": true,
-  "files.associations": {
-    "*.css": "tailwindcss",
-    "*.env*": "dotenv"
-  },
-  "files.autoSave": "onFocusChange",
-  "files.trimTrailingWhitespace": true,
-  "files.insertFinalNewline": true,
-  "tailwindCSS.includeLanguages": {
-    "typescript": "typescript",
-    "typescriptreact": "typescriptreact"
-  },
-  "tailwindCSS.experimental.classRegex": [
-    [
-      "cva\\(([^)]*)\\)",
-      "[\"'`]([^\"'`]*).*?[\"'`]"
-    ],
-    [
-      "cn\\(([^)]*)\\)",
-      "(?:'|\"|`)([^']*)(?:'|\"|`)"
-    ]
-  ],
-  "search.exclude": {
-    "**/node_modules": true,
-    "**/dist": true,
-    "**/.next": true,
-    "**/build": true,
-    "**/coverage": true,
-    "**/.turbo": true,
-    "**/.expo": true
-  },
   "eslint.workingDirectories": [
-    "apps/api",
-    "apps/web",
-    "apps/mobile",
-    "packages/ui",
-    "packages/utils"
-  ],
-  "material-icon-theme.folders.associations": {
-    "websocket": "socket",
-    "schemas": "database",
-    "drizzle": "database",
-    "mongodb": "database",
-    "postgres": "database"
-  }
+    {
+      "mode": "auto"
+    }
+  ]
 }
