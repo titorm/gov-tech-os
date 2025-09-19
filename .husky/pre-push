@@ -32,6 +32,7 @@ echo "🔧 Running type checks for active packages (ui and types)..."
 (cd packages/types && pnpm run type-check) || { echo "Type-check failed in @repo/types. Fix TypeScript errors."; exit 1; }
 
 echo "🧪 Running tests..."
-pnpm test || { echo "Tests failed"; exit 1; }
+# Allow test runner to succeed even when some packages have no tests
+pnpm test -- --passWithNoTests || { echo "Tests failed"; exit 1; }
 
 echo "✅ Pre-push checks completed!"
