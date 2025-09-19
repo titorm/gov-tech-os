@@ -1,0 +1,44 @@
+{
+  "React Functional Component": {
+    "prefix": "rfc",
+    "body": [
+      "import React from 'react';",
+      "",
+      "interface ${1:ComponentName}Props {",
+      "  $2",
+      "}",
+      "",
+      "export const ${1:ComponentName}: React.FC<${1:ComponentName}Props> = ({$3}) => {",
+      "  return (",
+      "    <div>$4</div>",
+      "  );",
+      "};",
+      "",
+      "export default ${1:ComponentName};"
+    ],
+    "description": "Create a React functional component with TypeScript"
+  },
+  "NestJS Controller": {
+    "prefix": "ncontroller",
+    "body": [
+      "import { Controller, Get, Post, Body, Param } from '@nestjs/common';",
+      "import { ${1:Service}Service } from './${1/(.*)/${1:/downcase}/}.service';",
+      "",
+      "@Controller('${1/(.*)/${1:/downcase}/}')",
+      "export class ${1:Service}Controller {",
+      "  constructor(private readonly ${1/(.*)/${1:/downcase}/}Service: ${1:Service}Service) {}",
+      "",
+      "  @Get()",
+      "  findAll() {",
+      "    return this.${1/(.*)/${1:/downcase}/}Service.findAll();",
+      "  }",
+      "",
+      "  @Get(':id')",
+      "  findOne(@Param('id') id: string) {",
+      "    return this.${1/(.*)/${1:/downcase}/}Service.findOne(id);",
+      "  }",
+      "}"
+    ],
+    "description": "Create a NestJS controller"
+  }
+}

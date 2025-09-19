@@ -1,0 +1,43 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "\ud83d\udd27 Debug API",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/apps/api/src/main.ts",
+      "runtimeArgs": [
+        "-r",
+        "ts-node/register"
+      ],
+      "env": {
+        "NODE_ENV": "development",
+        "DATABASE_URL": "postgresql://postgres:password@localhost:5432/myapp",
+        "MONGODB_URI": "mongodb://localhost:27017/myapp-logs",
+        "REDIS_URL": "redis://localhost:6379"
+      },
+      "cwd": "${workspaceFolder}/apps/api",
+      "console": "integratedTerminal",
+      "restart": true,
+      "sourceMaps": true,
+      "outFiles": [
+        "${workspaceFolder}/apps/api/dist/**/*.js"
+      ]
+    },
+    {
+      "name": "\ud83c\udf10 Debug Web",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/vite/bin/vite.js",
+      "args": [
+        "--mode",
+        "development"
+      ],
+      "cwd": "${workspaceFolder}/apps/web",
+      "console": "integratedTerminal",
+      "env": {
+        "NODE_ENV": "development"
+      }
+    }
+  ]
+}

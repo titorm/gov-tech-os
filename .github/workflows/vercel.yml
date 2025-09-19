@@ -1,0 +1,53 @@
+name: Vercel Deployment
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'apps/web/**'
+      - 'packages/**'
+
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: 🏗️ Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: 📥 Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: 📥 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🔨 Build packages
+        run: pnpm build --filter=@repo/ui --filter=@repo/types --filter=@repo/utils
+
+      - name: 🔗 Link Vercel project
+        run: vercel link --yes --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: apps/web
+
+      - name: 🏗️ Build with Vercel
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: apps/web
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+
+      - name: 🚀 Deploy to Vercel
+        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} ${{ github.ref == 'refs/heads/main' && '--prod' || '' }}
+        working-directory: apps/web

@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: turborepo-template-postgres-dev
+    environment:
+      POSTGRES_DB: turborepo-template
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    networks:
+      - dev-network
+    
+  mongodb:
+    image: mongo:7-alpine
+    container_name: turborepo-template-mongo-dev
+    environment:
+      MONGO_INITDB_DATABASE: turborepo-template-logs
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_dev_data:/data/db
+    networks:
+      - dev-network
+    
+  redis:
+    image: redis:7-alpine
+    container_name: turborepo-template-redis-dev
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_dev_data:/data
+    networks:
+      - dev-network
+
+  # Database management tools
+  adminer:
+    image: adminer:4.8.1
+    container_name: turborepo-template-adminer
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - dev-network
+
+  mongo-express:
+    image: mongo-express:1.0.0
+    container_name: turborepo-template-mongo-express
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://mongodb:27017/turborepo-template-logs
+      ME_CONFIG_BASICAUTH: false
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongodb
+    networks:
+      - dev-network
+
+volumes:
+  postgres_dev_data:
+  mongodb_dev_data:
+  redis_dev_data:
+
+networks:
+  dev-network:
+    driver: bridge

@@ -1,0 +1,11 @@
+{
+  "name": "@repo/typescript-config",
+  "version": "1.0.0",
+  "main": "index.json",
+  "files": [
+    "*.json"
+  ],
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}

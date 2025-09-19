@@ -1,0 +1,21 @@
+{
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "ms-vscode.vscode-typescript-next",
+    "ms-vscode.vscode-eslint",
+    "bradlc.vscode-tailwindcss",
+    "ms-vscode.vscode-json",
+    "expo.vscode-expo-tools",
+    "ms-vscode.vscode-react-native",
+    "eamodio.gitlens",
+    "github.copilot",
+    "usernamehw.errorlens",
+    "streetsidesoftware.code-spell-checker",
+    "pkief.material-icon-theme",
+    "ms-azuretools.vscode-docker",
+    "formulahendry.auto-rename-tag",
+    "christian-kohler.path-intellisense",
+    "bradlc.vscode-tailwindcss",
+    "prisma.prisma"
+  ]
+}
