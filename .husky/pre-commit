@@ -1,6 +1,3 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 echo "🔍 Running pre-commit checks..."
 
 # Determine staged files and temporarily unstage any under dist or with a .dist suffix so checks skip build artifacts.
