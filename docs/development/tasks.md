@@ -1,0 +1,114 @@
+# GovTech OS - Plano de Implementação Granular (Backlog Detalhado do MVP)
+
+**Versão:** 1.2 **Status:** Pronto para Planejamento de Sprint **Foco:** Decomposição de Tarefas para Execução do MVP do
+Módulo de Gestão Financeira
+
+## 1. Introdução
+
+Este documento serve como o backlog de engenharia detalhado para a entrega do MVP da GovTech OS. Ele transforma os
+épicos de alto nível em um plano de implementação acionável, quebrando o trabalho em tarefas que são:
+
+- **Atômicas:** Representam uma unidade de trabalho lógica e coesa.
+- **Testáveis:** Possuem critérios de aceitação claros que podem ser validados.
+- **Estimáveis:** São pequenas o suficiente para que a equipe possa estimar o esforço com confiança.
+
+Este formato é projetado para ser importado diretamente para ferramentas de gerenciamento de projetos (Jira, Linear,
+Asana), formando a base para o planejamento de sprints.
+
+**Legenda de Estimativa (Story Points):**
+
+- **1 pt:** Tarefa mínima, de baixa complexidade e risco. (1-2 horas)
+- **2 pts:** Tarefa pequena, bem compreendida. (Meio dia)
+- **3 pts:** Tarefa de tamanho padrão, pode envolver algumas camadas. (1 dia)
+- **5 pts:** Tarefa mais complexa, com possíveis incertezas ou maior escopo. (2-3 dias)
+
+---
+
+## Épico 1: Fundação, Infraestrutura e DevOps
+
+_User Story: Como equipe de engenharia, queremos uma fundação de projeto sólida, automatizada e com as melhores
+práticas, para que possamos desenvolver, testar e implantar código com alta velocidade e confiança._
+
+### **História 1.1: Configuração do Ambiente de Desenvolvimento (Monorepo)**
+
+| ID        | Tarefa                                           | Esforço | Descrição Técnica                                                                                                                                                                | Critérios de Aceitação (DoD)                                                                                                                                                                                   |
+| :-------- | :----------------------------------------------- | :------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **T-101** | Inicializar Repositório e Estrutura pnpm         | 2 pts   | Criar o repositório no GitHub. Inicializar `pnpm` na raiz e configurar `pnpm-workspace.yaml`. Criar a estrutura de pastas `apps/` e `packages/`.                                 | - [ ] Repositório existe e está protegido (ex: branch `main`).<br>- Estrutura de pastas inicial está no lugar.<br>- `pnpm install` funciona na raiz.                                                           |
+| **T-102** | Configurar Pipeline Básico do Turborepo          | 2 pts   | Instalar `turbo` e criar o arquivo `turbo.json`. Definir pipelines básicos para `dev`, `build` e `lint`, especificando dependências (`dependsOn`) e saídas (`outputs`).          | - [ ] `pnpm turbo run build` executa em todos os workspaces.<br>- `pnpm turbo dev` inicia os apps `api` e `web` simultaneamente.<br>- A configuração de cache local está funcionando.                          |
+| **T-103** | Criar Pacote de Configuração ESLint              | 2 pts   | Em `packages/eslint-config-custom`, criar uma configuração compartilhada de ESLint/Prettier com as regras definidas no TDD.                                                      | - [ ] O pacote é criado e publicável internamente.<br>- Os apps `api` e `web` estendem essa configuração.<br>- `pnpm turbo run lint` reporta erros de estilo corretamente.                                     |
+| **T-104** | Criar Pacote de Configuração TypeScript          | 1 pt    | Em `packages/tsconfig`, criar os arquivos `tsconfig.base.json` e `tsconfig.react.json` com as configurações estritas do compilador.                                              | - [ ] Os arquivos `tsconfig.json` dos apps estendem as configurações base.<br>- A compilação (`tsc`) falha se houver erros de tipo.                                                                            |
+| **T-105** | Configurar Gerenciamento de Segredos com Doppler | 3 pts   | Criar um projeto no Doppler para os ambientes `dev`, `staging`, e `prod`. Definir segredos iniciais (ex: `DATABASE_URL`, `JWT_SECRET`). Integrar o CLI do Doppler no `pnpm dev`. | - [ ] `doppler run -- pnpm dev` injeta as variáveis de ambiente corretamente.<br>- O arquivo `.env.example` reflete as variáveis necessárias.<br>- O `README.md` explica como configurar o Doppler localmente. |
+
+### **História 1.2: Automação e Infraestrutura como Código (IaC)**
+
+| ID        | Tarefa                                                | Esforço | Descrição Técnica                                                                                                                                                                      | Critérios de Aceitação (DoD)                                                                                                                                                                                         |
+| :-------- | :---------------------------------------------------- | :------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **T-110** | Configurar Workflow de CI para PRs (Lint & Build)     | 3 pts   | Criar um workflow em `.github/workflows/ci.yml` que é acionado em `pull_request` para `develop`. Deve instalar dependências e executar `pnpm turbo run lint` e `pnpm turbo run build`. | - [ ] O pipeline é acionado automaticamente em novos PRs.<br>- O PR fica bloqueado para merge se o pipeline falhar.<br>- O cache de dependências do `pnpm` é usado.                                                  |
+| **T-111** | Adicionar Stage de Testes Unitários ao Pipeline de CI | 2 pts   | Adicionar um job ao workflow de CI que executa `pnpm turbo run test`. Configurar a coleta de relatórios de cobertura de código (ex: Codecov).                                          | - [ ] O pipeline falha se algum teste falhar.<br>- Um relatório de cobertura é gerado e (opcionalmente) comentado no PR.                                                                                             |
+| **T-112** | Provisionar Banco de Dados de Staging com Terraform   | 3 pts   | Escrever um script Terraform para provisionar uma instância PostgreSQL (ex: AWS RDS ou Supabase) para o ambiente de staging. O estado do Terraform deve ser armazenado remotamente.    | - [ ] `terraform plan` e `terraform apply` executam com sucesso.<br>- A URL do banco de dados provisionado é adicionada como um segredo no Doppler (staging).<br>- O banco de dados não está acessível publicamente. |
+
+---
+
+## Épico 2: API Backend - Funcionalidades e Lógica de Negócio
+
+_User Story: Como um desenvolvedor frontend, eu quero um conjunto de endpoints de API bem definidos, seguros e testados
+para construir a interface do usuário._
+
+### **História 2.1: Estrutura do Servidor e Configuração**
+
+| ID        | Tarefa                                              | Esforço | Descrição Técnica                                                                                                                                                                                        | Critérios de Aceitação (DoD)                                                                                                                                                    |
+| :-------- | :-------------------------------------------------- | :------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **T-201** | Inicializar Aplicação Fastify com TypeScript        | 2 pts   | No `apps/api`, configurar o projeto Node.js com `tsconfig.json` e `package.json`. Criar o `server.ts` que instancia e inicia o servidor Fastify.                                                         | - [ ] `pnpm --filter api dev` inicia o servidor em modo de desenvolvimento com hot-reload.<br>- O servidor escuta na porta definida por uma variável de ambiente.               |
+| **T-202** | Implementar Plugins Essenciais (CORS, Health Check) | 2 pts   | Registrar o plugin `@fastify/cors` com uma política restritiva para permitir apenas o domínio do frontend de staging/prod. Criar um plugin customizado para a rota `GET /health`.                        | - [ ] Requisições de um domínio não autorizado são bloqueadas pelo CORS.<br>- `GET /health` retorna `200 OK`.                                                                   |
+| **T-203** | Configurar Conexão com Banco de Dados Drizzle       | 3 pts   | Criar um plugin do Fastify que estabelece a conexão com o banco de dados usando `node-postgres` e Drizzle. A instância do Drizzle deve ser decorada no objeto `fastify` para estar disponível nas rotas. | - [ ] O servidor se conecta com sucesso ao banco de dados na inicialização.<br>- A conexão é resiliente a falhas temporárias.<br>- A URL do banco vem de variáveis de ambiente. |
+
+### **História 2.2: Módulo de Autenticação e Autorização**
+
+| ID        | Tarefa                                               | Esforço | Descrição Técnica                                                                                                                                                         | Critérios de Aceitação (DoD)                                                                                                                                    |
+| :-------- | :--------------------------------------------------- | :------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **T-210** | Definir Schemas de Autenticação no Banco             | 2 pts   | No `packages/db`, definir os schemas Drizzle para `users`, `municipios` e `usersToMunicipios`. Gerar a migração SQL correspondente.                                       | - [ ] O schema está definido com todas as constraints (not null, unique).<br>- `drizzle-kit` gera a migração sem erros.<br>- A migração é aplicada com sucesso. |
+| **T-211** | Implementar Serviço de Hash de Senhas e JWT          | 3 pts   | Criar `auth.service.ts`. Implementar funções para `hashPassword(bcrypt)`, `comparePassword(bcrypt)`, `generateTokens(jwt)` e `verifyToken(jwt)`.                          | - [ ] As funções são puras e cobertas por testes unitários.<br>- Os segredos e tempos de expiração do JWT vêm de variáveis de ambiente.                         |
+| **T-212** | Implementar Endpoint `POST /auth/login`              | 3 pts   | Criar a rota e o handler para login. Usar Zod para validar o corpo da requisição. Chamar os serviços de autenticação e definir os cookies `httpOnly`.                     | - [ ] A rota funciona conforme o diagrama de sequência.<br>- Retorna 400 para payloads inválidos.<br>- Retorna 401 para credenciais incorretas.                 |
+| **T-213** | Implementar Plugin de Verificação de JWT (Auth Hook) | 3 pts   | Criar um hook `onRequest` ou um plugin de autenticação que extrai e verifica o JWT do header `Authorization`. Se válido, decodifica e anexa o `user` ao objeto `request`. | - [ ] Rotas protegidas retornam 401 se o token for inválido, expirado ou ausente.<br>- O objeto `request.user` está disponível nas rotas após a verificação.    |
+| **T-214** | Implementar Lógica de Autorização (RBAC)             | 2 pts   | Estender o hook de autenticação para verificar se o `request.user` tem permissão para acessar um recurso específico (ex: `municipioId`).                                  | - [ ] Requisições para `/municipios/abc/...` falham com 403 se o usuário não tiver acesso ao município "abc".                                                   |
+
+### **História 2.3: Módulo Financeiro**
+
+| ID        | Tarefa                                         | Esforço | Descrição Técnica                                                                                                                                                                                  | Critérios de Aceitação (DoD)                                                                                                             |
+| :-------- | :--------------------------------------------- | :------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------- |
+| **T-220** | Definir Schema do Banco para Dados Financeiros | 2 pts   | No `packages/db`, definir o schema Drizzle para a tabela `financial_summaries` usando o tipo `jsonb` para dados agregados. Gerar a migração.                                                       | - [ ] O schema reflete a estrutura de dados necessária para os widgets.<br>- A migração é gerada e aplicada com sucesso.                 |
+| **T-221** | Implementar Endpoint do Dashboard (com Mocks)  | 3 pts   | Criar a rota `GET /municipios/:municipioId/financials/summary`. A rota deve ser protegida. O handler deve validar os query params de data (Zod) e retornar dados mockados com a estrutura correta. | - [ ] A rota está protegida e autorizada.<br>- Valida corretamente `startDate` e `endDate`.<br>- Retorna 200 com um JSON mockado válido. |
+| **T-222** | Conectar Endpoint do Dashboard aos Dados Reais | 3 pts   | Refatorar o `financials.service.ts` para buscar dados da tabela `financial_summaries` no banco, aplicando os filtros de `municipioId` e período de tempo.                                          | - [ ] O endpoint agora retorna dados reais do banco de dados.<br>- A query no banco de dados é eficiente e utiliza índices.              |
+
+---
+
+## Épico 3: Aplicação Frontend - Interface e Experiência do Usuário
+
+_User Story: Como Marcela, eu quero uma interface web clara, rápida e responsiva que me permita visualizar meus dados
+financeiros e sentir que estou no controle._
+
+### **História 3.1: Configuração do Projeto e UI Core**
+
+| ID        | Tarefa                                           | Esforço | Descrição Técnica                                                                                                                                                                        | Critérios de Aceitação (DoD)                                                                                                                                  |
+| :-------- | :----------------------------------------------- | :------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **T-301** | Inicializar Projeto Vite e Configurar Tailwind   | 2 pts   | No `apps/web`, configurar um projeto React + TS com Vite. Instalar Tailwind CSS e configurar o `tailwind.config.js` com os tokens de design (cores, fontes, espaçamento) do `design.md`. | - [ ] O projeto roda localmente com HMR.<br>- As classes de utilitário do Tailwind aplicam os estilos do design system corretamente.                          |
+| **T-302** | Configurar Storybook para Componentes Core       | 3 pts   | Integrar o Storybook ao projeto `web` para desenvolvimento e documentação de componentes de UI isoladamente.                                                                             | - [ ] `pnpm storybook` inicia o Storybook.<br>- O primeiro componente (`Button`) é adicionado com stories para seus diferentes estados.                       |
+| **T-303** | Construir Componentes Core (Button, Card, Input) | 5 pts   | Criar os componentes `Button`, `Card`, `Input`, e `SkeletonLoader` em `src/components/core`, seguindo as especificações de UI/UX e A11y.                                                 | - [ ] Cada componente tem seu próprio arquivo de story no Storybook.<br>- Os componentes são responsivos e acessíveis (passam em auditorias básicas de a11y). |
+
+### **História 3.2: Fluxo de Autenticação e Roteamento**
+
+| ID        | Tarefa                                          | Esforço | Descrição Técnica                                                                                                                                                                                  | Critérios de Aceitação (DoD)                                                                                                                                                                         |
+| :-------- | :---------------------------------------------- | :------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **T-310** | Configurar Roteador e Layouts (Público/Privado) | 3 pts   | Instalar e configurar Tanstack Router. Definir a árvore de rotas, incluindo uma rota `private` que renderiza um `Outlet` dentro de um layout com Header/Sidebar, e uma rota pública para `/login`. | - [ ] As rotas estão definidas de forma type-safe.<br>- A rota privada é protegida e redireciona para o login se não houver sessão.                                                                  |
+| **T-311** | Criar Contexto de Autenticação                  | 3 pts   | Criar um React Context (`AuthContext`) para armazenar o estado de autenticação do usuário (ex: token, dados do usuário) e fornecer funções `login` e `logout`.                                     | - [ ] O `AuthContext` é envolvido em torno do app.<br>- O hook `useAuth` fornece o estado de autenticação aos componentes filhos.                                                                    |
+| **T-312** | Construir a Página de Login e `useMutation`     | 3 pts   | Criar a UI do formulário de login. Usar `react-hook-form` para gerenciamento de estado e validação. Implementar a chamada à API com `useMutation` do Tanstack Query.                               | - [ ] A submissão do formulário chama a mutação.<br>- A UI reflete os estados `isPending` e `isError` da mutação.<br>- Em caso de sucesso, o `AuthContext` é atualizado e o usuário é redirecionado. |
+
+### **História 3.3: Dashboard Financeiro**
+
+| ID        | Tarefa                                        | Esforço | Descrição Técnica                                                                                                                                                                                   | Critérios de Aceitação (DoD)                                                                                                                                         |
+| :-------- | :-------------------------------------------- | :------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **T-320** | Construir Layout da Página do Dashboard       | 2 pts   | Criar a página do Dashboard em `src/features/dashboard`. Construir a grade responsiva (2xN, 1xN) que abrigará os widgets.                                                                           | - [ ] A página é renderizada corretamente em diferentes tamanhos de tela (desktop, mobile).<br>- Utiliza os componentes de layout definidos anteriormente.           |
+| **T-321** | Implementar `useQuery` para Dados Financeiros | 2 pts   | Criar um hook customizado `useFinancialSummary` que encapsula o `useQuery` do Tanstack Query para buscar os dados da API.                                                                           | - [ ] O hook busca dados na montagem do componente.<br>- A `queryKey` é dinâmica para incluir filtros.                                                               |
+| **T-322** | Construir Widget de Receita                   | 3 pts   | Criar o componente `RevenueWidget`. Ele deve usar o hook `useFinancialSummary` e lidar com os estados `isLoading` (mostrando `SkeletonLoader`), `isError` (mostrando mensagem de erro) e `success`. | - [ ] O widget renderiza o `SkeletonLoader` corretamente.<br>- Renderiza o gráfico de linha (usando uma biblioteca como `recharts`) com os dados quando disponíveis. |
+| **T-323** | Construir Widget de Despesas                  | 3 pts   | Similar ao anterior, criar o `ExpensesWidget` que usa os mesmos dados do hook, mas renderiza um gráfico de pizza/rosca.                                                                             | - [ ] O widget lida com todos os estados de dados.<br>- Renderiza o gráfico de pizza corretamente.                                                                   |
+| **T-324** | Implementar Filtro de Data e Revalidação      | 3 pts   | Adicionar um componente de seletor de data à página do Dashboard. O estado de data selecionado deve ser gerenciado e passado para a `queryKey` do hook `useFinancialSummary`.                       | - [ ] Alterar a data no seletor aciona um `refetch` do `useQuery`.<br>- Os widgets são atualizados com os novos dados sem um refresh de página completo.             |

@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 export const DropdownMenu = (props: any) => <div {...props} />;
 export const DropdownMenuCheckboxItem = (props: any) => <div {...props} />;
 export const DropdownMenuContent = (props: any) => <div {...props} />;

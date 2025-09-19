@@ -9,10 +9,10 @@ export type LogDocument = Log & Document;
 })
 export class Log {
   @Prop({ required: true })
-  level: string;
+  level!: string;
 
   @Prop({ required: true })
-  message: string;
+  message!: string;
 
   @Prop({ type: Object })
   meta?: Record<string, any>;
@@ -39,7 +39,7 @@ export class Log {
   responseTime?: number;
 
   @Prop({ default: Date.now })
-  timestamp: Date;
+  timestamp!: Date;
 }
 
 export const LogSchema = SchemaFactory.createForClass(Log);

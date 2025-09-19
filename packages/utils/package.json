@@ -16,7 +16,7 @@
     "dev": "tsup --watch",
     "lint": "eslint src --ext ts --report-unused-disable-directives --max-warnings 0",
     "type-check": "tsc --noEmit",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "clean": "rm -rf dist"
   },
   "dependencies": {

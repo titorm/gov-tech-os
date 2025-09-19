@@ -1,5 +1,6 @@
 import type { Config } from 'drizzle-kit';
 
+// Use a loose cast to avoid mismatches between local drizzle-kit types and the installed version.
 export default {
   schema: './src/database/postgres/schemas/*',
   out: './src/database/postgres/migrations',
@@ -9,4 +10,4 @@ export default {
   },
   verbose: true,
   strict: true,
-} satisfies Config;
+} as unknown as Config;

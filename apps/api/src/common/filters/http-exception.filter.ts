@@ -1,11 +1,5 @@
-import {
-  ExceptionFilter,
-  Catch,
-  ArgumentsHost,
-  HttpException,
-  Logger,
-} from '@nestjs/common';
-import { FastifyRequest, FastifyReply } from 'fastify';
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException, Logger } from '@nestjs/common';
+// fastify types intentionally omitted in minimal stub
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -13,8 +7,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse<FastifyReply>();
-    const request = ctx.getRequest<FastifyRequest>();
+    // Avoid importing Fastify types at build-time in this minimal stub
+    const response: any = ctx.getResponse();
+    const request: any = ctx.getRequest();
     const status = exception.getStatus();
     const exceptionResponse = exception.getResponse();
 
@@ -27,9 +22,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       ...(typeof exceptionResponse === 'object' ? exceptionResponse : {}),
     };
 
-    this.logger.warn(
-      `HTTP Exception: ${request.method} ${request.url} - ${status} ${exception.message}`,
-    );
+    this.logger.warn(`HTTP Exception: ${request.method} ${request.url} - ${status} ${exception.message}`);
 
     response.status(status).send(errorResponse);
   }

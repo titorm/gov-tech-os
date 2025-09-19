@@ -1,5 +1,5 @@
-// Minimal fallback ESLint flat config used during pre-commit to avoid requiring workspace packages.
-// This keeps lint-staged/eslint from failing when workspace package resolution is not available.
+// Minimal root ESLint flat config. Keep this file intentionally small and
+// non-opinionated so per-package `eslint.config.cjs` files can take precedence.
 module.exports = [
   {
     ignores: ['node_modules/**'],
@@ -7,8 +7,6 @@ module.exports = [
       ecmaVersion: 2022,
       sourceType: 'module',
     },
-    rules: {
-      // keep defaults; specialized rules live in workspace config
-    },
+    rules: {},
   },
 ];

@@ -1,45 +1,18 @@
-import {
-  ExceptionFilter,
-  Catch,
-  ArgumentsHost,
-  HttpException,
-  HttpStatus,
-  Logger,
-} from '@nestjs/common';
-import { FastifyRequest, FastifyReply } from 'fastify';
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
-  private readonly logger = new Logger(AllExceptionsFilter.name);
-
   catch(exception: unknown, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse<FastifyReply>();
-    const request = ctx.getRequest<FastifyRequest>();
+    const res = ctx.getResponse();
 
-    const httpStatus =
-      exception instanceof HttpException
-        ? exception.getStatus()
-        : HttpStatus.INTERNAL_SERVER_ERROR;
+    const status = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
+    const message = exception instanceof HttpException ? exception.message : 'Internal server error';
 
-    const errorResponse = {
-      statusCode: httpStatus,
-      timestamp: new Date().toISOString(),
-      path: request.url,
-      method: request.method,
-      message:
-        exception instanceof HttpException
-          ? exception.message
-          : 'Internal server error',
-    };
-
-    if (httpStatus === HttpStatus.INTERNAL_SERVER_ERROR) {
-      this.logger.error(
-        `${request.method} ${request.url}`,
-        exception instanceof Error ? exception.stack : exception,
-      );
+    try {
+      res.status(status).json({ statusCode: status, message });
+    } catch (e) {
+      // best-effort: if response handling fails, do nothing
     }
-
-    response.status(httpStatus).send(errorResponse);
   }
 }

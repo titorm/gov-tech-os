@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 export const Toast = (props: any) => <div {...props} />;
 export const ToastAction = (props: any) => <button {...props} />;
 export const ToastClose = (props: any) => <button {...props} />;

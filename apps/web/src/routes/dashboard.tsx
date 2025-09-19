@@ -1,18 +1,22 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { useQuery } from '@tanstack/react-query'
-import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from '@repo/ui'
-import { MaterialIcon } from '../components/ui/MaterialIcon'
-import { api } from '../lib/api'
+import { createFileRoute } from '@tanstack/react-router';
+import { useQuery } from '@tanstack/react-query';
+import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from '@repo/ui';
+import { MaterialIcon } from '../components/ui/MaterialIcon';
+import { api } from '../lib/api';
 
 export const Route = createFileRoute('/dashboard')({
   component: Dashboard,
-})
+});
 
 function Dashboard() {
-  const { data: user, isLoading, error } = useQuery({
+  const {
+    data: _user,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ['user'],
     queryFn: () => api.get('/auth/profile'),
-  })
+  });
 
   if (isLoading) {
     return (
@@ -21,7 +25,7 @@ function Dashboard() {
           <MaterialIcon name="refresh" size={32} />
         </div>
       </div>
-    )
+    );
   }
 
   if (error) {
@@ -33,9 +37,7 @@ function Dashboard() {
               <MaterialIcon name="error" className="mr-2" />
               Authentication Required
             </CardTitle>
-            <CardDescription>
-              Please log in to access the dashboard
-            </CardDescription>
+            <CardDescription>Please log in to access the dashboard</CardDescription>
           </CardHeader>
           <CardContent>
             <Button className="w-full">
@@ -45,7 +47,7 @@ function Dashboard() {
           </CardContent>
         </Card>
       </div>
-    )
+    );
   }
 
   return (
@@ -67,9 +69,7 @@ function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">2,350</div>
-              <p className="text-xs text-muted-foreground">
-                +20.1% from last month
-              </p>
+              <p className="text-xs text-muted-foreground">+20.1% from last month</p>
             </CardContent>
           </Card>
 
@@ -80,9 +80,7 @@ function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">+2350</div>
-              <p className="text-xs text-muted-foreground">
-                +180.1% from last month
-              </p>
+              <p className="text-xs text-muted-foreground">+180.1% from last month</p>
             </CardContent>
           </Card>
 
@@ -93,9 +91,7 @@ function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">+12,234</div>
-              <p className="text-xs text-muted-foreground">
-                +19% from last month
-              </p>
+              <p className="text-xs text-muted-foreground">+19% from last month</p>
             </CardContent>
           </Card>
 
@@ -106,9 +102,7 @@ function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">+573</div>
-              <p className="text-xs text-muted-foreground">
-                +201 since last hour
-              </p>
+              <p className="text-xs text-muted-foreground">+201 since last hour</p>
             </CardContent>
           </Card>
         </div>
@@ -117,43 +111,29 @@ function Dashboard() {
           <Card>
             <CardHeader>
               <CardTitle>Recent Activity</CardTitle>
-              <CardDescription>
-                You have 3 unread messages
-              </CardDescription>
+              <CardDescription>You have 3 unread messages</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div className="flex items-center">
                   <MaterialIcon name="mail" className="mr-4 text-blue-500" />
                   <div className="ml-4 space-y-1">
-                    <p className="text-sm font-medium leading-none">
-                      New message from John Doe
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      2 minutes ago
-                    </p>
+                    <p className="text-sm font-medium leading-none">New message from John Doe</p>
+                    <p className="text-sm text-muted-foreground">2 minutes ago</p>
                   </div>
                 </div>
                 <div className="flex items-center">
                   <MaterialIcon name="person_add" className="mr-4 text-green-500" />
                   <div className="ml-4 space-y-1">
-                    <p className="text-sm font-medium leading-none">
-                      New user registered
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      5 minutes ago
-                    </p>
+                    <p className="text-sm font-medium leading-none">New user registered</p>
+                    <p className="text-sm text-muted-foreground">5 minutes ago</p>
                   </div>
                 </div>
                 <div className="flex items-center">
                   <MaterialIcon name="payment" className="mr-4 text-yellow-500" />
                   <div className="ml-4 space-y-1">
-                    <p className="text-sm font-medium leading-none">
-                      Payment received
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      10 minutes ago
-                    </p>
+                    <p className="text-sm font-medium leading-none">Payment received</p>
+                    <p className="text-sm text-muted-foreground">10 minutes ago</p>
                   </div>
                 </div>
               </div>
@@ -162,5 +142,5 @@ function Dashboard() {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,0 +1,9 @@
+# Ignore generated files from TanStack Router and other generators
+**/*.gen.ts
+**/*.gen.tsx
+**/*.generated.ts
+**/*.generated.tsx
+
+# Ignore build artifacts
+dist/
+.vite
