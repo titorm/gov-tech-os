@@ -19,7 +19,10 @@
     "type-check": "tsc --noEmit",
     "db:push": "drizzle-kit push:pg",
     "db:generate": "drizzle-kit generate:pg",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "cleanup:refresh-tokens:dry": "node ../../scripts/cleanup_refresh_tokens.js --dry-run",
+    "cleanup:refresh-tokens:perform": "node ../../scripts/cleanup_refresh_tokens.js",
+    "cleanup:refresh-tokens:batched": "node ../../scripts/cleanup_refresh_tokens.js"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.6",

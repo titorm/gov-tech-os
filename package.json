@@ -19,6 +19,9 @@
     "db:push": "turbo db:push",
     "db:studio": "turbo db:studio",
     "cleanup:refresh-tokens": "node scripts/cleanup_refresh_tokens.js",
+    "cleanup:refresh-tokens:dry": "node scripts/cleanup_refresh_tokens.js --dry-run",
+    "cleanup:refresh-tokens:perform": "node scripts/cleanup_refresh_tokens.js",
+    "cleanup:refresh-tokens:batched": "node scripts/cleanup_refresh_tokens.js",
     "prepare": "husky install"
   },
   "devDependencies": {
