@@ -15,12 +15,10 @@
     "strict": true,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@/*": [
-        "src/*"
-      ],
-      "@repo/types": [
-        "../../packages/types/src"
-      ]
+      "@/*": ["src/*"],
+      "@repo/types": ["../../packages/types/src"],
+      "@gov-tech/db": ["../../packages/db/src"],
+      "@gov-tech/db/*": ["../../packages/db/src/*"]
     }
   }
 }

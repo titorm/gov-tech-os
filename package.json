@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "build": "turbo build",
-    "dev": "turbo dev",
+    "dev": "turbo dev --filter=!mobile",
     "lint": "turbo lint",
     "type-check": "turbo type-check",
     "test": "turbo test",

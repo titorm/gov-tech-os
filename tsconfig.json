@@ -4,6 +4,11 @@
     "module": "ESNext",
     "lib": ["ES2020", "DOM"],
     "moduleResolution": "Node",
+    "baseUrl": ".",
+    "paths": {
+      "@gov-tech/db": ["packages/db/src"],
+      "@gov-tech/db/*": ["packages/db/src/*"]
+    },
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,

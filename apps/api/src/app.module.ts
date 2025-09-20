@@ -3,101 +3,57 @@ import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { CacheModule } from '@nestjs/cache-manager';
 import { MongooseModule } from '@nestjs/mongoose';
-import { redisStore } from 'cache-manager-redis-yet';
 
-// Configuration
+// Configuration loaders (project config functions)
 import { databaseConfig } from './config/database.config';
 import { jwtConfig } from './config/jwt.config';
 import { cacheConfig } from './config/cache.config';
 
-// Modules
+// Feature modules (import existing modules)
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { SubscriptionsModule } from './modules/subscriptions/subscriptions.module';
 import { LogsModule } from './modules/logs/logs.module';
 
-// WebSocket
+// Websocket and common providers
 import { AppGateway } from './websocket/gateways/app.gateway';
-
-// Common
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 
+// Health module is loaded via require to avoid potential circular dependency during early bootstrap
+const HealthModule = require('./health/health.module').HealthModule;
+
+// Build imports list and conditionally include optional connections
+const importsList: any[] = [
+  ConfigModule.forRoot({
+    isGlobal: true,
+    load: [databaseConfig, jwtConfig, cacheConfig],
+    envFilePath: ['.env.local', '.env'],
+  }),
+  ThrottlerModule.forRoot({
+    ttl: parseInt(process.env.THROTTLE_TTL || '60'),
+    limit: parseInt(process.env.THROTTLE_LIMIT || '20'),
+  } as unknown as any),
+  CacheModule.register({ isGlobal: true }),
+  AuthModule,
+  UsersModule,
+  SubscriptionsModule,
+  LogsModule,
+  HealthModule,
+];
+
+if (process.env.MONGODB_URI) {
+  importsList.unshift(MongooseModule.forRoot(process.env.MONGODB_URI, { connectionName: 'logs' }));
+}
+
 @Module({
-  imports: [
-    // Configuration
-    ConfigModule.forRoot({
-      isGlobal: true,
-      load: [databaseConfig, jwtConfig, cacheConfig],
-      envFilePath: ['.env.local', '.env'],
-    }),
-
-    // Rate limiting
-    ThrottlerModule.forRoot([
-      {
-        name: 'short',
-        ttl: 1000,
-        limit: 3,
-      },
-      {
-        name: 'medium',
-        ttl: 10000,
-        limit: 20,
-      },
-      {
-        name: 'long',
-        ttl: 60000,
-        limit: 100,
-      },
-    ]),
-
-    // Caching
-    CacheModule.registerAsync({
-      isGlobal: true,
-      useFactory: async () => {
-        const store = await redisStore({
-          socket: {
-            host: process.env.REDIS_HOST || 'localhost',
-            port: parseInt(process.env.REDIS_PORT || '6379'),
-          },
-        });
-
-        return {
-          store,
-          ttl: 300 * 1000, // 5 minutes
-        };
-      },
-    }),
-
-    // MongoDB for logs
-    MongooseModule.forRoot(process.env.MONGODB_URI!, {
-      connectionName: 'logs',
-    }),
-
-    // Feature modules
-    AuthModule,
-    UsersModule,
-    SubscriptionsModule,
-    LogsModule,
-    // Health
-    // added by História 2.1
-    require('./health/health.module').HealthModule,
-  ],
+  imports: importsList,
   providers: [
     AppGateway,
-    {
-      provide: 'APP_FILTER',
-      useClass: AllExceptionsFilter,
-    },
-    {
-      provide: 'APP_INTERCEPTOR',
-      useClass: LoggingInterceptor,
-    },
-    {
-      provide: 'APP_INTERCEPTOR',
-      useClass: TransformInterceptor,
-    },
+    { provide: 'APP_FILTER', useClass: AllExceptionsFilter },
+    { provide: 'APP_INTERCEPTOR', useClass: LoggingInterceptor },
+    { provide: 'APP_INTERCEPTOR', useClass: TransformInterceptor },
   ],
 })
 export class AppModule {}
