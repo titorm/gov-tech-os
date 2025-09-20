@@ -1,0 +1,19 @@
+// Example Terraform backend configuration for AWS S3 + DynamoDB locking
+// Copy this to `backend.tf` and adjust names/region before use. Do NOT commit
+// sensitive values into source control. This is provided as an example only.
+
+terraform {
+  backend "s3" {
+    bucket         = "my-terraform-state-bucket-example"
+    key            = "gov-tech/staging/terraform.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "my-terraform-locks"
+    encrypt        = true
+  }
+}
+
+// Notes:
+// - Create the S3 bucket and DynamoDB table manually or via an infrastructure account
+//   before running `terraform init` with this backend.
+// - Use a dedicated service principal or AWS credentials with least privilege.
+// - Store credentials in your CI secrets (e.g., AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY).

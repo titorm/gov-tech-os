@@ -1,0 +1,13 @@
+// Example terraform variable values for staging (non-sensitive placeholders)
+
+pg_database_name = "govtech_staging"
+pg_username = "govtech_user"
+pg_instance_class = "db.t3.micro"
+pg_allocated_storage = 20
+pg_engine_version = "13.11"
+pg_multi_az = false
+
+// Do NOT put secrets here. Use environment variables or CI secrets to pass the
+// database password and other sensitive values:
+// - AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY (for Terraform remote state / apply)
+// - PG_PASSWORD (to pass to the DB provisioning module)
