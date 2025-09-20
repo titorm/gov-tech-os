@@ -80,6 +80,9 @@ import { TransformInterceptor } from './common/interceptors/transform.intercepto
     UsersModule,
     SubscriptionsModule,
     LogsModule,
+    // Health
+    // added by História 2.1
+    require('./health/health.module').HealthModule,
   ],
   providers: [
     AppGateway,
