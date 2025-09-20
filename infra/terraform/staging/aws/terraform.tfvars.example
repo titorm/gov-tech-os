@@ -1,0 +1,9 @@
+region = "us-east-1"
+db_name = "govtech_staging"
+db_username = "govtech_admin"
+# db_password = "<SET_VIA_CI_OR_LOCALLY>"
+instance_class = "db.t3.micro"
+engine_version = "15"
+allocated_storage = 20
+# db_subnet_ids = ["subnet-...", "subnet-..."]
+# security_group_ids = ["sg-..."]

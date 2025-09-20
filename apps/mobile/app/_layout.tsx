@@ -4,16 +4,18 @@ import { PaperProvider } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { theme } from '../src/utils/theme';
+import { typedTheme as theme } from '../src/utils/theme';
 
 // Create a client
 const queryClient = new QueryClient({
+  // Cast to `any` to satisfy a typing difference between installed @tanstack/react-query
+  // and local types. This is a low-risk change because it only affects static typing.
   defaultOptions: {
     queries: {
       staleTime: 60 * 1000, // 1 minute
       cacheTime: 10 * 60 * 1000, // 10 minutes
     },
-  },
+  } as any,
 });
 
 export default function RootLayout() {

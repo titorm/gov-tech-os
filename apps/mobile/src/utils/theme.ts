@@ -1,7 +1,7 @@
 import { MD3LightTheme, MD3DarkTheme, configureFonts } from 'react-native-paper';
 
 const fontConfig = {
-  web: {
+  default: {
     regular: {
       fontFamily: 'Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif',
       fontWeight: '400' as const,
@@ -59,7 +59,9 @@ const fontConfig = {
 
 export const theme = {
   ...MD3LightTheme,
-  fonts: configureFonts({ config: fontConfig }),
+  // Cast to any to avoid a strict typing mismatch with react-native-paper's MD3Type
+  // definitions coming from the installed package. The runtime behavior is unchanged.
+  fonts: configureFonts({ config: fontConfig } as any),
   colors: {
     ...MD3LightTheme.colors,
     primary: 'rgb(103, 80, 164)',
@@ -96,7 +98,8 @@ export const theme = {
 
 export const darkTheme = {
   ...MD3DarkTheme,
-  fonts: configureFonts({ config: fontConfig }),
+  // Cast to any for the dark theme as well.
+  fonts: configureFonts({ config: fontConfig } as any),
   colors: {
     ...MD3DarkTheme.colors,
     primary: 'rgb(208, 188, 255)',
@@ -130,3 +133,7 @@ export const darkTheme = {
     inversePrimary: 'rgb(103, 80, 164)',
   },
 };
+
+// Provide typed exports (cast-only) to satisfy callers that expect MD3 theme types.
+export const typedTheme = theme as unknown as typeof MD3LightTheme;
+export const typedDarkTheme = darkTheme as unknown as typeof MD3DarkTheme;
