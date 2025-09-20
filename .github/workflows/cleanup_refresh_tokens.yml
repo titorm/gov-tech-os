@@ -1,0 +1,103 @@
+name: Cleanup expired refresh tokens
+
+on:
+  schedule:
+    - cron: '0 3 * * *' # daily at 03:00 UTC
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      perform_cleanup:
+        description: 'Set to true to perform actual cleanup (requires environment approval)'
+        required: false
+        default: 'false'
+
+jobs:
+  dry_run:
+    name: Daily dry-run
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        run: npm i -g pnpm@8
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Ensure cleanup script exists
+        run: |
+          if [ ! -f scripts/cleanup_refresh_tokens.js ]; then
+            echo "scripts/cleanup_refresh_tokens.js not found";
+            exit 2;
+          fi
+
+      - name: Export DATABASE_URL from secrets and fail if missing
+        run: |
+          if [ -z "${{ secrets.DATABASE_URL }}" ]; then
+            echo "DATABASE_URL secret is missing. Set secrets.DATABASE_URL in repository or organization settings.";
+            exit 2;
+          fi
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
+
+      - name: Run cleanup script in dry-run mode
+        run: pnpm run cleanup:refresh-tokens -- --dry-run
+
+      - name: Log completion
+        run: echo "Dry-run finished"
+
+  perform_cleanup:
+    name: Perform cleanup (protected)
+    needs: dry_run
+    runs-on: ubuntu-latest
+    # Run when manually dispatched with perform_cleanup=true OR when code is pushed to the protected
+    # `main` branch and the commit message includes the token [perform-cleanup]. The job is attached to
+    # `environment: production` so repository environment protection/approvals still apply.
+    if: |
+      ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.perform_cleanup == 'true') ||
+         (github.event_name == 'push' && contains(github.event.head_commit.message, '[perform-cleanup]')) }}
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        run: npm i -g pnpm@8
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Ensure cleanup script exists
+        run: |
+          if [ ! -f scripts/cleanup_refresh_tokens.js ]; then
+            echo "scripts/cleanup_refresh_tokens.js not found";
+            exit 2;
+          fi
+
+      - name: Export DATABASE_URL from secrets and fail if missing
+        run: |
+          if [ -z "${{ secrets.DATABASE_URL }}" ]; then
+            echo "DATABASE_URL secret is missing. Set secrets.DATABASE_URL in repository or organization settings.";
+            exit 2;
+          fi
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
+
+      - name: Run cleanup script (perform)
+        run: pnpm run cleanup:refresh-tokens
+
+      - name: Log completion
+        run: echo "Perform cleanup finished"

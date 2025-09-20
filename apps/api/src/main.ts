@@ -1,9 +1,6 @@
 import { NestFactory } from '@nestjs/core';
-import {
-  FastifyAdapter,
-  NestFastifyApplication,
-} from '@nestjs/platform-fastify';
-import { ValidationPipe, Logger } from '@nestjs/common';
+import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+import { ValidationPipe, Logger, BadRequestException } from '@nestjs/common';
 import helmet from '@fastify/helmet';
 import { AppModule } from './app.module';
 
@@ -12,7 +9,7 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter({
       logger: true,
-    }),
+    })
   );
 
   const globalPrefix = 'api/v1';
@@ -33,9 +30,7 @@ async function bootstrap() {
 
   // CORS
   app.enableCors({
-    origin: process.env.NODE_ENV === 'production' 
-      ? ['https://yourdomain.com'] 
-      : true,
+    origin: process.env.NODE_ENV === 'production' ? ['https://yourdomain.com'] : true,
     credentials: true,
   });
 
@@ -48,19 +43,32 @@ async function bootstrap() {
       transformOptions: {
         enableImplicitConversion: true,
       },
-    }),
+      exceptionFactory: errors => {
+        // Map ValidationError[] to a consistent error shape
+        const formatted = (errors as any[]).map(err => ({
+          field: err.property,
+          constraints: err.constraints || {},
+        }));
+
+        const response = {
+          statusCode: 400,
+          ok: false,
+          message: 'Validation failed',
+          errors: formatted,
+        };
+
+        return new BadRequestException(response);
+      },
+    })
   );
 
   const port = process.env.PORT || 3001;
   await app.listen(port, '0.0.0.0');
 
-  Logger.log(
-    `🚀 API running on: http://localhost:${port}/${globalPrefix}`,
-    'Bootstrap',
-  );
+  Logger.log(`🚀 API running on: http://localhost:${port}/${globalPrefix}`, 'Bootstrap');
 }
 
-bootstrap().catch((err) => {
+bootstrap().catch(err => {
   Logger.error('❌ Error starting server', err, 'Bootstrap');
   process.exit(1);
 });
