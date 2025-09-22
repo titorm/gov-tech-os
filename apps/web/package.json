@@ -14,7 +14,7 @@
     "@repo/ui": "workspace:*",
     "@repo/utils": "workspace:*",
     "@tanstack/query-devtools": "^5.8.4",
-    "@tanstack/react-query": "^5.8.4",
+    "@tanstack/react-query": "^5.90.1",
     "@tanstack/react-query-devtools": "^5.89.0",
     "@tanstack/react-router": "^1.58.3",
     "@tanstack/router-devtools": "^1.58.3",
