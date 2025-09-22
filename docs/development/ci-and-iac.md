@@ -20,6 +20,13 @@ dados de _staging_.
 2. Para Terraform, configure um backend remoto (S3/State service) e defina as variáveis descritas em
    `infra/terraform/staging/README.md`.
 
+## Status: manutenção de refresh tokens
+
+Há uma automação adicionada para manutenção de refresh tokens expiráveis:
+
+- Script: `scripts/cleanup_refresh_tokens.js` com `--dry-run`, `--batch-size` e `--limit`.
+- Workflow: `.github/workflows/cleanup_refresh_tokens.yml` (dry-run diário + job protegido para execução destrutiva).
+
 ---
 
 Notas de segurança: nunca commitar segredos em texto plano. Use Doppler/Secrets Manager para variáveis sensíveis e

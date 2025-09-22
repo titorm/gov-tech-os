@@ -1,6 +1,7 @@
 # API Documentation
 
-This document provides comprehensive information about the NestJS API built with Fastify, Drizzle ORM, and modern security practices.
+This document provides comprehensive information about the NestJS API built with Fastify, Drizzle ORM, and modern
+security practices.
 
 ## 🏗️ Architecture Overview
 
@@ -38,24 +39,28 @@ The API uses JWT (JSON Web Tokens) for authentication with the following feature
 ## 📚 API Modules
 
 ### Authentication (`/auth`)
+
 - User registration and login
 - JWT token management
 - Password reset functionality
 - Profile management
 
 ### Users (`/users`)
+
 - User CRUD operations
 - Profile updates
 - Role management
 - User search and filtering
 
 ### Subscriptions (`/subscriptions`)
+
 - Subscription management
 - Stripe integration
 - Plan upgrades/downgrades
 - Billing history
 
 ### Logs (`/logs`)
+
 - System logging
 - User activity tracking
 - Error reporting
@@ -64,6 +69,7 @@ The API uses JWT (JSON Web Tokens) for authentication with the following feature
 ## 🔒 Security Features
 
 ### Helmet Integration
+
 ```typescript
 await app.register(helmet, {
   contentSecurityPolicy: {
@@ -79,6 +85,7 @@ await app.register(helmet, {
 ```
 
 ### Rate Limiting
+
 ```typescript
 ThrottlerModule.forRoot([
   {
@@ -87,7 +94,7 @@ ThrottlerModule.forRoot([
     limit: 3,
   },
   {
-    name: 'medium', 
+    name: 'medium',
     ttl: 10000,
     limit: 20,
   },
@@ -96,10 +103,11 @@ ThrottlerModule.forRoot([
     ttl: 60000,
     limit: 100,
   },
-])
+]);
 ```
 
 ### Input Validation
+
 - All endpoints use `class-validator` decorators
 - Automatic validation with `ValidationPipe`
 - Sanitization of user inputs
@@ -110,6 +118,7 @@ ThrottlerModule.forRoot([
 All API responses follow a consistent format:
 
 ### Success Response
+
 ```json
 {
   "statusCode": 200,
@@ -122,6 +131,7 @@ All API responses follow a consistent format:
 ```
 
 ### Error Response
+
 ```json
 {
   "statusCode": 400,
@@ -133,6 +143,7 @@ All API responses follow a consistent format:
 ```
 
 ### Paginated Response
+
 ```json
 {
   "statusCode": 200,
@@ -151,22 +162,25 @@ All API responses follow a consistent format:
 ## 🏃‍♂️ Getting Started
 
 1. **Install Dependencies**:
+
    ```bash
    cd apps/api
    pnpm install
    ```
 
 2. **Environment Setup**:
+
    ```bash
    cp .env.example .env
    # Edit .env with your configuration
    ```
 
 3. **Database Setup**:
+
    ```bash
    # Start PostgreSQL, MongoDB, Redis
    docker-compose -f docker-compose.dev.yml up -d
-   
+
    # Push database schema
    pnpm db:push
    ```
@@ -206,6 +220,12 @@ pnpm test:cov
 - **API Documentation**: Swagger/OpenAPI (available at `/docs`)
 - **Logging**: Winston with MongoDB integration
 - **Debugging**: VS Code debugger configuration included
+
+## Status: refresh token maintenance
+
+There is a maintenance script `scripts/cleanup_refresh_tokens.js` to remove expired refresh tokens and a CI workflow
+`.github/workflows/cleanup_refresh_tokens.yml` that performs daily dry-runs and a protected perform job. See
+`docs/features/cleanup-refresh-tokens.md` for details.
 
 ## 🚀 Performance Optimizations
 

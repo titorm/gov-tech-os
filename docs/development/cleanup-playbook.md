@@ -36,6 +36,12 @@ DATABASE_URL=postgres://user:pass@host:5432/db pnpm run cleanup:refresh-tokens -
 DATABASE_URL=postgres://user:pass@host:5432/db pnpm run cleanup:refresh-tokens -- --batch-size 500 --limit 5000
 ```
 
+You can add a short pause between batches to reduce DB pressure:
+
+```bash
+DATABASE_URL=postgres://user:pass@host:5432/db pnpm run cleanup:refresh-tokens -- --batch-size 500 --limit 5000 --pause-ms 200
+```
+
 ### 4) Executar via GitHub Actions (recomendado)
 
 1. Vá em Actions → `Cleanup expired refresh tokens` → `Run workflow`.

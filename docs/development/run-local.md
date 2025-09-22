@@ -47,3 +47,15 @@ Environment variables
 - `JWT_SECRET` — set this in CI/prod; default `dev-secret` is used in local dev.
 
 If you want, I can add this short guide to the repository README as well.
+
+## Maintenance scripts
+
+There is a repo-level maintenance script to clear expired refresh tokens:
+
+```bash
+# Dry-run
+pnpm run cleanup:refresh-tokens -- --dry-run
+
+# Perform (be careful)
+pnpm run cleanup:refresh-tokens
+```

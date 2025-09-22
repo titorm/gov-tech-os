@@ -71,3 +71,6 @@ your intended refresh window differs from 7 days.
 
 To remove expired refresh tokens, a helper script is provided: `scripts/cleanup_refresh_tokens.js` — run it with
 `node scripts/cleanup_refresh_tokens.js <DATABASE_URL>` or set `DATABASE_URL` in the environment.
+
+Status: the cleanup script now supports `--dry-run`, `--batch-size` and `--limit` to safely inspect and delete expired
+tokens.

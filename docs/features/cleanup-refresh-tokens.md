@@ -45,6 +45,7 @@ node scripts/cleanup_refresh_tokens.js postgres://user:pass@host:5432/db
 - `--dry-run` or `--dry`: report how many rows would be deleted and show a small sample (no deletes performed)
 - `--batch-size <n>`: number of rows to delete per transaction (default: `1000`)
 - `--limit <n>`: optional total cap on number of rows to delete in this run
+- `--pause-ms <n>`: optional pause in milliseconds between batches to reduce DB pressure (default: `0`)
 
 Examples:
 
@@ -58,6 +59,12 @@ Perform batched cleanup deleting at most 5000 rows in batches of 500:
 
 ```bash
 DATABASE_URL=postgres://user:pass@host:5432/db pnpm run cleanup:refresh-tokens -- --batch-size 500 --limit 5000
+```
+
+Perform batched cleanup with a 200ms pause between batches:
+
+```bash
+DATABASE_URL=postgres://user:pass@host:5432/db pnpm run cleanup:refresh-tokens -- --batch-size 500 --limit 5000 --pause-ms 200
 ```
 
 ## Status — O que já foi implementado

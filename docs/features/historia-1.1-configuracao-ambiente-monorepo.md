@@ -112,6 +112,11 @@ pnpm turbo run lint
 2. Criar skeletons em `packages/eslint` e `packages/tsconfig` (baixo risco).
 3. Implementar `T-101` (inicialização/validação pnpm) — começar a codificar/configurar.
 
+## Status: manutenção de refresh tokens
+
+O repositório já inclui um script de manutenção de refresh tokens `scripts/cleanup_refresh_tokens.js` e uma workflow de
+CI `.github/workflows/cleanup_refresh_tokens.yml` (dry-run diário + job protegido para execução de limpeza).
+
 ---
 
 ## Nota sobre CI e Assets

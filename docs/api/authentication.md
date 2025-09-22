@@ -25,17 +25,20 @@ The API uses a robust JWT-based authentication system with the following feature
 ## User Roles
 
 ### Admin
+
 - Full system access
 - User management
 - System configuration
 - Analytics access
 
-### Moderator  
+### Moderator
+
 - Content moderation
 - User support
 - Limited analytics
 
 ### User
+
 - Personal data access
 - Subscription management
 - Profile updates
@@ -43,6 +46,7 @@ The API uses a robust JWT-based authentication system with the following feature
 ## Authentication Endpoints
 
 ### Register User
+
 ```http
 POST /api/v1/auth/register
 Content-Type: application/json
@@ -56,6 +60,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "statusCode": 201,
@@ -76,6 +81,7 @@ Content-Type: application/json
 ```
 
 ### Login User
+
 ```http
 POST /api/v1/auth/login
 Content-Type: application/json
@@ -87,18 +93,27 @@ Content-Type: application/json
 ```
 
 ### Get User Profile
+
 ```http
 GET /api/v1/auth/profile
 Authorization: Bearer <token>
 ```
 
 ### Refresh Token
+
 ```http
 POST /api/v1/auth/refresh
 Authorization: Bearer <refresh-token>
 ```
 
+## Notes: refresh token maintenance
+
+- Refresh tokens are persisted in the `refresh_tokens` table and include a `jti` (UUID) claim. The repository includes a
+  maintenance script `scripts/cleanup_refresh_tokens.js` to remove expired refresh tokens and a scheduled workflow to
+  run daily dry-runs and protected perform jobs.
+
 ### Logout
+
 ```http
 POST /api/v1/auth/logout
 Authorization: Bearer <token>
@@ -107,6 +122,7 @@ Authorization: Bearer <token>
 ## Guards and Decorators
 
 ### JWT Auth Guard
+
 ```typescript
 @UseGuards(JwtAuthGuard)
 @Get('protected-route')
@@ -116,6 +132,7 @@ getProtectedData() {
 ```
 
 ### Roles Guard
+
 ```typescript
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin', 'moderator')
@@ -126,6 +143,7 @@ getAdminData() {
 ```
 
 ### Public Routes
+
 ```typescript
 @Public()
 @Get('public-route')
@@ -135,6 +153,7 @@ getPublicData() {
 ```
 
 ### Current User Decorator
+
 ```typescript
 @Get('my-profile')
 @UseGuards(JwtAuthGuard)
@@ -146,6 +165,7 @@ getProfile(@CurrentUser() user: User) {
 ## Password Security
 
 ### Hashing
+
 ```typescript
 import * as bcrypt from 'bcryptjs';
 
@@ -156,6 +176,7 @@ const hashPassword = async (password: string): Promise<string> => {
 ```
 
 ### Validation
+
 ```typescript
 const validatePassword = async (password: string, hash: string): Promise<boolean> => {
   return bcrypt.compare(password, hash);
@@ -165,6 +186,7 @@ const validatePassword = async (password: string, hash: string): Promise<boolean
 ## Rate Limiting
 
 ### Login Attempts
+
 ```typescript
 @Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 attempts per minute
 @Post('login')
@@ -174,6 +196,7 @@ async login(@Body() loginDto: LoginDto) {
 ```
 
 ### Registration
+
 ```typescript
 @Throttle({ default: { limit: 3, ttl: 3600000 } }) // 3 registrations per hour
 @Post('register')
@@ -186,19 +209,20 @@ async register(@Body() registerDto: RegisterDto) {
 
 ```typescript
 interface JwtPayload {
-  sub: string;        // User ID
-  email: string;      // User email
-  role: string;       // User role
-  iat: number;        // Issued at
-  exp: number;        // Expires at
-  iss: string;        // Issuer
-  aud: string;        // Audience
+  sub: string; // User ID
+  email: string; // User email
+  role: string; // User role
+  iat: number; // Issued at
+  exp: number; // Expires at
+  iss: string; // Issuer
+  aud: string; // Audience
 }
 ```
 
 ## Security Best Practices
 
 ### Environment Variables
+
 ```bash
 # Use strong, randomly generated secrets
 JWT_SECRET=your-super-secret-jwt-key-change-this-in-production-minimum-32-chars
@@ -209,6 +233,7 @@ JWT_REFRESH_SECRET=different-secret-for-refresh-tokens
 ```
 
 ### Token Storage (Client-Side)
+
 ```typescript
 // ❌ Don't store in localStorage
 localStorage.setItem('token', token);
@@ -224,9 +249,10 @@ res.cookie('token', token, {
 ```
 
 ### Password Requirements
+
 - Minimum 8 characters
 - At least 1 uppercase letter
-- At least 1 lowercase letter  
+- At least 1 lowercase letter
 - At least 1 number
 - At least 1 special character
 
@@ -267,6 +293,7 @@ res.cookie('token', token, {
 ## Testing Authentication
 
 ### Unit Tests
+
 ```typescript
 describe('AuthService', () => {
   it('should validate correct password', async () => {
@@ -279,6 +306,7 @@ describe('AuthService', () => {
 ```
 
 ### E2E Tests
+
 ```typescript
 describe('/auth (e2e)', () => {
   it('/auth/login (POST)', () => {
@@ -297,6 +325,7 @@ describe('/auth (e2e)', () => {
 ## Monitoring and Logging
 
 ### Authentication Events
+
 - Login attempts (successful/failed)
 - Registration events
 - Token refresh events
@@ -304,6 +333,7 @@ describe('/auth (e2e)', () => {
 - Account lockouts
 
 ### Log Format
+
 ```json
 {
   "timestamp": "2024-01-01T12:00:00.000Z",

@@ -1,10 +1,12 @@
 # turborepo-template Documentation
 
-Welcome to the comprehensive documentation for turborepo-template, a modern full-stack application built with the latest technologies.
+Welcome to the comprehensive documentation for turborepo-template, a modern full-stack application built with the latest
+technologies.
 
 ## 📚 Documentation Structure
 
 ### API Documentation
+
 - [API Overview](./api/README.md) - Complete API documentation
 - [Authentication](./api/authentication.md) - JWT authentication system
 - [Endpoints](./api/endpoints.md) - All REST API endpoints
@@ -12,6 +14,7 @@ Welcome to the comprehensive documentation for turborepo-template, a modern full
 - [Rate Limiting](./api/rate-limiting.md) - API rate limiting configuration
 
 ### Database Documentation
+
 - [Database Overview](./database/README.md) - Database architecture
 - [PostgreSQL Schema](./database/postgres.md) - Drizzle ORM schemas
 - [MongoDB Collections](./database/mongodb.md) - Document database structure
@@ -19,6 +22,7 @@ Welcome to the comprehensive documentation for turborepo-template, a modern full
 - [Migrations](./database/migrations.md) - Database migration guide
 
 ### UI Documentation
+
 - [UI Components](./ui/README.md) - Component library overview
 - [Material Design 3](./ui/material-design.md) - Design system implementation
 - [shadcn/ui Integration](./ui/shadcn.md) - Component usage guide
@@ -26,6 +30,7 @@ Welcome to the comprehensive documentation for turborepo-template, a modern full
 - [Icons](./ui/icons.md) - Material Symbols usage
 
 ### Development Documentation
+
 - [Getting Started](./development/README.md) - Quick start guide
 - [Project Structure](./development/structure.md) - Codebase organization
 - [Development Workflow](./development/workflow.md) - Best practices
@@ -33,6 +38,7 @@ Welcome to the comprehensive documentation for turborepo-template, a modern full
 - [Troubleshooting](./development/troubleshooting.md) - Common issues
 
 ### Deployment Documentation
+
 - [Deployment Overview](./deployment/README.md) - Deployment strategies
 - [Docker Setup](./deployment/docker.md) - Containerization
 - [Vercel Deployment](./deployment/vercel.md) - Frontend deployment
@@ -50,6 +56,7 @@ Welcome to the comprehensive documentation for turborepo-template, a modern full
 ## 📋 Technology Stack
 
 ### Backend
+
 - **NestJS** - Node.js framework with TypeScript
 - **Fastify** - High-performance HTTP server
 - **Drizzle ORM** - Type-safe database operations
@@ -59,6 +66,7 @@ Welcome to the comprehensive documentation for turborepo-template, a modern full
 - **Socket.IO** - Real-time WebSocket communication
 
 ### Frontend
+
 - **React 18** - UI library with hooks and concurrent features
 - **TanStack Router** - Type-safe client-side routing
 - **TanStack Query** - Server state management
@@ -68,12 +76,14 @@ Welcome to the comprehensive documentation for turborepo-template, a modern full
 - **Material Design 3** - Modern design system
 
 ### Mobile
+
 - **React Native** - Cross-platform mobile development
 - **Expo** - Development platform and tools
 - **Expo Router** - File-based navigation
 - **React Native Paper** - Material Design 3 components
 
 ### DevOps & Tooling
+
 - **Turborepo** - Monorepo build system
 - **Docker** - Containerization platform
 - **GitHub Actions** - CI/CD automation
@@ -92,6 +102,17 @@ Welcome to the comprehensive documentation for turborepo-template, a modern full
 7. **Start Development**: `pnpm dev`
 
 For detailed setup instructions, see the [Development Guide](./development/README.md).
+
+---
+
+## Status: Cleanup automation implemented
+
+The repository includes a maintenance script and CI automation to remove expired refresh tokens:
+
+- `scripts/cleanup_refresh_tokens.js` — Node script supporting `--dry-run`, `--batch-size`, and `--limit`.
+- Root npm scripts: `cleanup:refresh-tokens`, `cleanup:refresh-tokens:dry`, `cleanup:refresh-tokens:perform`,
+  `cleanup:refresh-tokens:batched`.
+- GitHub Actions workflow `.github/workflows/cleanup_refresh_tokens.yml` — daily dry-run and protected perform job.
 
 ## 🤝 Contributing
 
