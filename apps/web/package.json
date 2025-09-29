@@ -16,7 +16,7 @@
     "@tanstack/query-devtools": "^5.8.4",
     "@tanstack/react-query": "^5.8.4",
     "@tanstack/react-query-devtools": "^5.89.0",
-    "@tanstack/react-router": "^1.58.3",
+    "@tanstack/react-router": "^1.132.25",
     "@tanstack/router-devtools": "^1.58.3",
     "axios": "^1.6.2",
     "react": "^19.1.1",
